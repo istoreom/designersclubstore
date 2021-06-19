@@ -17,7 +17,7 @@
   "name"                 :  "Pos Coupons And Vouchers",
   "summary"              :  """The module allows you to create discount coupons and vouchers in Odoo POS. The voucher code can be used by the customer to obtain discount on orders.""",
   "category"             :  "Point of Sale",
-  "version"              :  "1.1.0",
+  "version"              :  "1.0.2",
   "sequence"             :  1,
   "author"               :  "Webkul Software Pvt. Ltd.",
   "license"              :  "Other proprietary",

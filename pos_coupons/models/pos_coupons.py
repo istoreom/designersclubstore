@@ -59,7 +59,6 @@ class VoucherVoucher(models.Model):
         if coupon_obj and wk_validity != 1:
             coupon_obj.validity = wk_validity
         return coupon_obj.id
-
     @api.model
     def get_coupon_data(self, coupon_id=False):
         if coupon_id:
