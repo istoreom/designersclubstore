@@ -28,7 +28,12 @@ class VoucherVoucher(models.Model):
         vals['customer_type'] = vals['customer_type']
         vals['customer_id'] = vals.pop('partner_id')
         vals['name'] = vals['name']
-        vals['validity'] = float(vals['validity'])
+        wk_validity_intial = float(vals['validity'])
+        if float(vals['validity']) == 1:
+            vals['validity'] = float(vals['validity'])
+        else:
+            vals['validity'] = float(vals['validity']) - 1
+        wk_validity = float(vals['validity']) 
         vals['total_available'] = float(vals['total_available'])
         vals['voucher_value'] = float(vals.pop('coupon_value'))
         vals['note'] = vals['note']
@@ -39,12 +44,21 @@ class VoucherVoucher(models.Model):
         vals['voucher_usage'] = vals['voucher_usage']
         vals['expiry_date'] =  vals['max_expiry_date']
         if vals['max_expiry_date'] < str(fields.Date.today()):
-            vals['expiry_date'] = str(fields.Date.today())
+            if wk_validity == 1:
+                if wk_validity_intial == 1:
+                    vals['expiry_date'] = str(fields.Date.today() + timedelta(0))
+                else:
+                    vals['expiry_date'] = str(fields.Date.today() + timedelta(wk_validity))
+            else:
+                vals['expiry_date'] = str(fields.Date.today() + timedelta(wk_validity-1))
+
         if vals.get('amount_type'):
             vals['voucher_val_type'] = vals.pop('amount_type')
         vals.pop('max_expiry_date')
-        return self.create(vals).id
-
+        coupon_obj = self.create(vals)
+        if coupon_obj and wk_validity != 1:
+            coupon_obj.validity = wk_validity
+        return coupon_obj.id
     @api.model
     def get_coupon_data(self, coupon_id=False):
         if coupon_id:
@@ -53,7 +67,7 @@ class VoucherVoucher(models.Model):
                 'name': coupon.name,
                 'coupon_code': coupon.voucher_code,
                 'issue_date': coupon.issue_date,
-                'expiry_date': coupon.issue_date,
+                'expiry_date': coupon.expiry_date,
                 'coupon_value': coupon.voucher_value,
             }
         return False
