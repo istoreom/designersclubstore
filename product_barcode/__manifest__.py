@@ -31,9 +31,6 @@
     'company': 'Cybrosys Techno Solutions',
     'website': 'https://www.cybrosys.com',
     'depends': ['stock', 'product'],
-    'data': [
-        'views/product_label.xml',
-    ],
     'images': ['static/description/banner.png'],
     'license': 'AGPL-3',
     'installable': True,
