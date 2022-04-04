@@ -46,14 +46,14 @@ class PaymentAcquirerThawani(models.Model):
         omr_currency_id = self.env.ref('base.OMR')
         sale_currency_id = sale_order.currency_id
         for line in sale_order.order_line:
-            if line.price_total:
+            if line.price_total and line.product_uom_qty:
                 unit_amount = (line.price_total / line.product_uom_qty) if line.product_uom_qty else line.price_unit
                 if sale_currency_id != omr_currency_id:
                     unit_amount = line.currency_id._convert(unit_amount, omr_currency_id, sale_order.company_id or self.env.company, fields.Date.today())
                 product_list.append({
                     "name": line.product_id.name,
                     "quantity": int(line.product_uom_qty),
-                    "unit_amount": int(1 * 1000)
+                    "unit_amount": int(unit_amount * 1000)
                 })
         payload = {
             "client_reference_id": str(values.get('partner_id')),
