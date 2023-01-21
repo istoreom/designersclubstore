@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="pos_config_view_form_inherit_pos_logo" model="ir.ui.view"> 
+        <field name="name">pos.config.form.inherit.pos.logo</field>
+        <field name="model">pos.config</field>
+        <field name="inherit_id" ref="point_of_sale.pos_config_view_form"/>
+        <field name="arch" type="xml">
+            <div id="category_reference" position="after">
+                <div class="col-12 col-lg-6 o_setting_box">
+                    <div class="o_setting_left_pane">
+                        <field name="receipt_logo"/>
+                    </div>
+                    <div class="o_setting_right_pane">
+                        <label for="receipt_logo"/>
+                        <div class="text-muted">
+                            Set logo and barcode on pos receipt
+                        </div>
+                        <div class="content-group mt16" attrs="{'invisible': [('receipt_logo', '=', False)]}">
+                            <field name="logo_setting" class="o_light_label" widget="radio"/>
+                        </div>
+                        <div class="content-group mt16" attrs="{'invisible': ['|', ('logo_setting', '=', 'use_company_logo'), ('receipt_logo', '=', False)]}">
+                            <field name="pos_logo" widget="image" class="oe_avatar" style="float: left;"/>
+                        </div>
+                        <div class="content-group mt16" attrs="{'invisible': ['|', ('logo_setting', '=', 'use_pos_logo'), ('receipt_logo', '=', False)]}">
+                            <field name="logo" widget="image" class="oe_avatar" style="float: left;"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </field>
+    </record>
+</odoo>
