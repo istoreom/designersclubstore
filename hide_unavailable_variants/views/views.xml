@@ -1,0 +1,43 @@
+<odoo>
+    <data>
+        <record id="product_attr_value_view_form" model="ir.ui.view">
+            <field name="name">product.attr.form.inherit</field>
+            <field name="model">product.attribute</field>
+            <field name="inherit_id" ref="product.product_attribute_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='display_type']" position="after">
+                    <field name="unavailable_value_view_type" widget="radio" options="{'horizontal': True}"
+                           attrs="{'invisible': [('display_type', '!=', 'button')]}"/>
+                </xpath>
+            </field>
+        </record>
+
+<!--        <record model="ir.ui.view" id="product_normal_form_view">-->
+<!--            <field name="name">product.product.website.form</field>-->
+<!--            <field name="model">product.product</field>-->
+<!--            <field name="inherit_id" ref="product.product_normal_form_view"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <xpath expr="//field[@name='barcode']" position="after">-->
+<!--                    <field name="hide_on_website" attrs="{'invisible': [('product_variant_count', '&lt;', 2)]}"/>-->
+<!--                    <field name="threshold_qty" attrs="{'invisible': ['|',('product_variant_count', '&lt;', 2), ('hide_on_website', '!=', 'stock_based')]}"/>-->
+<!--                </xpath>-->
+<!--            </field>-->
+<!--        </record>-->
+
+<!--        <record model="ir.ui.view" id="product_variant_easy_edit_view">-->
+<!--            <field name="name">product.product.website.form</field>-->
+<!--            <field name="model">product.product</field>-->
+<!--            <field name="inherit_id" ref="product.product_variant_easy_edit_view"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <xpath expr="//field[@name='default_code']/../.." position="before">-->
+<!--                    <group>-->
+<!--                        <group>-->
+<!--                            <field name="hide_on_website" attrs="{'invisible': [('product_variant_count', '&lt;', 2)]}"/>-->
+<!--                            <field name="threshold_qty" attrs="{'invisible': ['|',('product_variant_count', '&lt;', 2), ('hide_on_website', '!=', 'stock_based')]}"/>-->
+<!--                        </group>-->
+<!--                    </group>-->
+<!--                </xpath>-->
+<!--            </field>-->
+<!--        </record>-->
+    </data>
+</odoo>
