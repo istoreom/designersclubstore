@@ -218,10 +218,12 @@ odoo.define('hide_unavailable_variants', function (require) {
                 var attribute_ids = variants.attribute_ids
                 var value_count_per_attr = variants.value_count_per_attr
                 var clicked_on_variant_id = parseInt($(ev.target).attr('data-value_id'))
+                var attribute_display_types = variants.attribute_display_types
                 var unavailable_variant_view_type = variants.unavailable_variant_view_type
                 var all_attrs_childs = $parent.find(".js_add_cart_variants").children()
                 //            console.log("sssssssss", all_attrs_childs)
                 for (var i = 0; i < all_attrs_childs.length; i++) {
+                    if ([ 'button'].indexOf(attribute_display_types[$(all_attrs_childs[i]).data("attribute_id")]) > -1) {
                     var variant_list = $(all_attrs_childs[i]).find('ul').children()
                     //                console.log("variant_list", variant_list)
                     for (var j = 0; j < variant_list.length; j++) {
@@ -244,6 +246,7 @@ odoo.define('hide_unavailable_variants', function (require) {
                                 }
                             }
                         }
+                    }
                     }
                 }
 
@@ -271,6 +274,7 @@ odoo.define('hide_unavailable_variants', function (require) {
                     var $first_attr_value = false
 
                     for (var i = 0; i < all_attrs_childs.length; i++) {
+                        if ([ 'button'].indexOf(attribute_display_types[$(all_attrs_childs[i]).data("attribute_id")]) > -1) {
                         var variant_list = $(all_attrs_childs[i]).find('ul').children()
                         for (var j = 0; j < variant_list.length; j++) {
                             var variant_value = $(variant_list[j]).find('label').find('input')
@@ -318,6 +322,7 @@ odoo.define('hide_unavailable_variants', function (require) {
                                     }
                                 }
                             }
+                        }
                         }
                     }
                     if ($first_attr_value) {

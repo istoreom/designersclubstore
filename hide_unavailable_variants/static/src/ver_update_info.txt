@@ -1,0 +1,1 @@
+1. Hide a variant when the qty <= 0

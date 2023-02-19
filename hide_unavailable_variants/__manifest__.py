@@ -10,10 +10,10 @@
 
     'author': 'ErpMstar Solutions',
     'category': 'Management System',
-    'version': '1.0',
+    'version': '1.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['website_attr_display_type_button'],
+    'depends': ['website_attr_display_type_button', 'website_sale_stock'],
 
     # always loaded
     'data': [
@@ -32,6 +32,4 @@
     'application': True,
     'live_test_url': "https://www.youtube.com/watch?v=d2R744VE-8U&list=PL054IvUbtGqsygHVvfT4lXzOiJNHuUVy3",
     'images': ['static/description/banner.gif'],
-    'price': 25,
-    'currency': 'EUR',
 }

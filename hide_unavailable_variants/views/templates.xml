@@ -2,7 +2,8 @@
     <data>
         <template id="variant_not_avail" inherit_id="website_sale.product">
             <xpath expr="//div[hasclass('js_product')]" position="inside">
-                <div id="unavailable_variant" t-att-data-values="product.get_variant_count()">
+                <div id="unavailable_variant"
+                     t-att-data-values="product.with_context(special_call=True).get_variant_count()">
                 </div>
             </xpath>
         </template>
