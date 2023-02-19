@@ -2,8 +2,8 @@
 import itertools
 import json
 
-from odoo import models, fields, api
-from odoo.exceptions import ValidationError
+from odoo import models, fields
+from odoo.http import request
 
 
 class ProductTemplate(models.Model):
@@ -14,6 +14,7 @@ class ProductTemplate(models.Model):
             valid_combination_list = []
             attribute_ids = []
             unavailable_variant_view_type = []
+            attribute_display_types = {}
 
             all_empty = False
             try:
@@ -27,6 +28,7 @@ class ProductTemplate(models.Model):
                     for value in v:
                         val.append(value.id)
                         if value.attribute_id.id not in attribute_ids:
+                            attribute_display_types.update({value.attribute_id.id: value.attribute_id.display_type})
                             attribute_ids.append(value.attribute_id.id)
                             unavailable_variant_view_type.append(value.attribute_id.unavailable_value_view_type)
 
@@ -36,6 +38,7 @@ class ProductTemplate(models.Model):
                     for value in v:
                         val.append(value.id)
                         if value.attribute_id.id not in attribute_ids:
+                            attribute_display_types.update({value.attribute_id.id: value.attribute_id.display_type})
                             attribute_ids.append(value.attribute_id.id)
                             unavailable_variant_view_type.append(value.attribute_id.unavailable_value_view_type)
 
@@ -74,6 +77,7 @@ class ProductTemplate(models.Model):
                 variant_val_child_dict[all_val[i]] = child_list
             unavailable_variant_dict = {
                 "attribute_ids": attribute_ids,
+                "attribute_display_types": attribute_display_types,
                 "unavailable_variant_view_type": unavailable_variant_view_type,
                 "value_to_show": variant_val_child_dict,
                 "value_to_show_tuple": list(valid_comb),
@@ -102,10 +106,19 @@ class ProductTemplate(models.Model):
         for combination in self._get_possible_combinations(parent_combination, necessary_values):
             org_combination = combination
             combination -= no_variant_attr_val
-            variant_id = self.product_variant_ids.filtered(
-                lambda variant: variant.product_template_attribute_value_ids == combination)
+            # variant_id = self.product_variant_ids.filtered(
+            #     lambda variant: variant.product_template_attribute_value_ids == combination)
+            variant_id = self._get_variant_for_combination(combination)
             if variant_id:
-                return org_combination
+                if variant_id.type == 'product' and self._context.get("special_call"):
+                    free_qty = variant_id.sudo().with_context(
+                        warehouse=request.website._get_warehouse_available()).free_qty
+                    if (free_qty <= 0):
+                        pass
+                    else:
+                        return org_combination
+                else:
+                    return org_combination
 
     def _is_combination_possible(self, combination, parent_combination=None, ignore_no_variant=False):
         result = super(ProductTemplate, self)._is_combination_possible(combination, parent_combination,
@@ -116,10 +129,16 @@ class ProductTemplate(models.Model):
                 if ptav.attribute_id.create_variant == "no_variant":
                     no_variant_attr_val += ptav
             combination -= no_variant_attr_val
-            variant_id = self.product_variant_ids.filtered(
-                lambda variant: variant.product_template_attribute_value_ids == combination)
-            if variant_id:
-                return True
+            # variant_id = self.product_variant_ids.filtered(
+            #     lambda variant: variant.product_template_attribute_value_ids == combination)
+            variant_id = self._get_variant_for_combination(combination)
+            if variant_id and self._context.get("special_call"):
+                free_qty = variant_id.sudo().with_context(
+                    warehouse=request.website._get_warehouse_available()).free_qty
+                if variant_id.type == 'product' and (free_qty <= 0):
+                    return False
+                else:
+                    return True
         return result
 
 
