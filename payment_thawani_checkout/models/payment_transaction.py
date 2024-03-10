@@ -33,7 +33,7 @@ class TransactionThawaniCheckout(models.Model):
         return self.env["res.currency"].sudo().search([('name','=','OMR'),'|',('active','=',True),('active','!=',True)], limit=1)
 
     def thawani_checkout_create_session(self, processing_values, **post):
-        acquirer_id = self.acquirer_id
+        acquirer_id = self.provider_id
         partner_id = self.partner_id
         from_currency = self.currency_id
         to_currency = self.get_thawani_default_currency()
@@ -83,7 +83,7 @@ class TransactionThawaniCheckout(models.Model):
 
     def _get_specific_rendering_values(self, processing_values):
         res = super()._get_specific_rendering_values(processing_values)
-        if self.provider != 'thawani_checkout':
+        if self.provider_code != 'thawani_checkout':
             return res
         return self.thawani_checkout_create_session(processing_values)
 
@@ -113,7 +113,7 @@ class TransactionThawaniCheckout(models.Model):
         trans_state = data.get("state", False)
         if trans_state:
             self.write({
-                'acquirer_reference': data.get('acquirer_reference'),
+                'provider_reference': data.get('provider_reference'),
                 'state_message': _("Thawani Payment Gateway Response :-") + data["state"]
             })
             if trans_state == 'paid':

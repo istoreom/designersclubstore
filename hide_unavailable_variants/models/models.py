@@ -83,6 +83,7 @@ class ProductTemplate(models.Model):
                 "value_to_show_tuple": list(valid_comb),
                 "value_count_per_attr": value_count_per_attr
             }
+            print('-------unavailable_variant_dict00000---', unavailable_variant_dict)
             return json.dumps(unavailable_variant_dict)
 
     def _get_first_possible_combination(self, parent_combination=None, necessary_values=None):
@@ -113,11 +114,14 @@ class ProductTemplate(models.Model):
                 if variant_id.type == 'product' and self._context.get("special_call"):
                     free_qty = variant_id.sudo().with_context(
                         warehouse=request.website._get_warehouse_available()).free_qty
+                    print ('=============free_qty============',free_qty)
                     if (free_qty <= 0):
                         pass
                     else:
+                        print ('===================', org_combination)
                         return org_combination
                 else:
+                    print ('2========================', org_combination)
                     return org_combination
 
     def _is_combination_possible(self, combination, parent_combination=None, ignore_no_variant=False):

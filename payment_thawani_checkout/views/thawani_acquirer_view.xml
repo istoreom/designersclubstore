@@ -4,17 +4,17 @@
 <!-- License URL : https://store.webkul.com/license.html/ -->
 <odoo>
     <data>
-        <record id="acquirer_form_for_thawani_checkout" model="ir.ui.view">
-            <field name="name">acquirer.form.thawani.checkout</field>
-            <field name="model">payment.acquirer</field>
-            <field name="inherit_id" ref="payment.payment_acquirer_form"/>
+        <record id="provider_form_for_thawani_checkout" model="ir.ui.view">
+            <field name="name">provider.form.thawani.checkout</field>
+            <field name="model">payment.provider</field>
+            <field name="inherit_id" ref="payment.payment_provider_form"/>
             <field name="arch" type="xml">
-                <xpath expr='//group[@name="acquirer"]' position='after'>
-                    <group attrs="{'invisible': [('provider', '!=', 'thawani_checkout')]}">
-                        <field name="thawani_public_key" attrs="{'required':[('provider', '=', 'thawani_checkout')]}"/>
-                        <field name="thawani_secret_key" attrs="{'required':[('provider', '=', 'thawani_checkout')]}"/>
+                <group name="provider_credentials" position="inside">
+                    <group invisible="code != 'thawani_checkout'">
+                        <field name="thawani_public_key"/>
+                        <field name="thawani_secret_key"/>
                     </group>
-                </xpath>
+                </group>
             </field>
         </record>
     </data>

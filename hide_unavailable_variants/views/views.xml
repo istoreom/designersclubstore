@@ -7,7 +7,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='display_type']" position="after">
                     <field name="unavailable_value_view_type" widget="radio" options="{'horizontal': True}"
-                           attrs="{'invisible': [('display_type', '!=', 'button')]}"/>
+                           invisible="display_type != 'button'"/>
                 </xpath>
             </field>
         </record>

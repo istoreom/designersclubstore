@@ -1,26 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates id="template" xml:space="preserve">
-<t t-name="OrderReceipt" t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension" owl="1">
-    <xpath expr="//img[hasclass('pos-receipt-logo')]" position="replace">
-        <t t-if="props.order.pos.config.receipt_logo and props.order.pos.config.logo_setting === 'use_company_logo'">
-            <img class="pos-receipt-logo" t-att-src='receipt.company.logo' alt="Logo"/>
-            <br/>
-        </t>
-        <t t-if="props.order.pos.config.receipt_logo and props.order.pos.config.logo_setting === 'use_pos_logo'">
-            <img class="pos-receipt-logo" t-att-src='receipt.pos_logo' alt="Logo"/>
-            <br/>
-        </t>
-    </xpath>
-    <xpath expr="//div[hasclass('pos-receipt-order-data')]" position="after">
-        <div style="text-align: center;" t-if="props.order.pos.config.receipt_logo">
-            <img style="margin-top: 15px;width: 75;height: 75px;" t-att-src="receipt.barcode"/>
-        </div>
-    </xpath>
-    <xpath expr="//t[@t-if='receipt.company.contact_address']" position="after">
-        <div t-if="props.order.pos.config.receipt_logo">
-            <t t-esc="props.order.pos.company.street || ''"/><br/>
-            <t t-esc="props.order.pos.company.city || ''"/>, <br/><t t-esc="props.order.pos.company.state_id[1] || ''"/>, <t t-esc="props.order.pos.company.zip || ''"/>
-        </div>
-    </xpath>    
-</t>
+    <t t-name="pw_pos_logo_barcode.Navbar" t-inherit="point_of_sale.Navbar" t-inherit-mode="extension">
+        <xpath expr="//img[hasclass('pos-logo')]" position="replace">
+            <t t-if="pos.config.receipt_logo">
+                <img class="pos-logo h-75 ms-3 me-auto align-self-center" t-on-click="() => debug.toggleWidget()" t-att-src="imageUrl" alt="Logo" />
+            </t>
+            <t t-else="">
+                <img class="pos-logo h-75 ms-3 me-auto align-self-center" t-on-click="() => debug.toggleWidget()" src="/web/static/img/logo.png" alt="Logo" />
+            </t>
+        </xpath>
+    </t>
+    <t t-name="pw_pos_logo_barcode.ReceiptHeader" t-inherit="point_of_sale.ReceiptHeader" t-inherit-mode="extension">
+        <xpath expr="//img[hasclass('pos-receipt-logo')]" position="replace">
+            <t t-if="props.data.receipt_logo and props.data.logo_setting == 'use_pos_logo'">
+                <img t-attf-src="/web/image?model=pos.config&amp;id={{props.data.config_id}}&amp;field=pw_pos_logo" alt="Logo" class="pos-receipt-logo"/>
+            </t>
+            <t t-else="">
+                <img t-attf-src="/web/image?model=res.company&amp;id={{props.data.company.id}}&amp;field=logo" class="pos-receipt-logo"/>
+            </t>
+        </xpath>
+        <xpath expr="//t[@t-if='props.data.company.phone']" position="before">
+            <div t-if="props.data.receipt_logo">
+                <t t-esc="props.data.company.street || ''"/><br/>
+                <t t-esc="props.data.company.city || ''"/>, <br/>
+                <t t-esc="props.data.company.state_id and props.data.company.state_id[1] || ''"/>,
+                <t t-esc="props.data.company.zip || ''"/>
+            </div>
+        </xpath>
+    </t>
+    <t t-name="pw_pos_logo_barcode.OrderReceipt" t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[hasclass('pos-receipt')]" position="inside">
+            <t t-if="props.data.receipt_logo">
+                <div style="text-align: center;">
+                    <img style="margin-top: 15px;width: 75;height: 75px;" t-att-src="props.data.pw_barcode"/>
+                </div>
+            </t>
+        </xpath>
+    </t>
 </templates>

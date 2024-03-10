@@ -20,17 +20,17 @@ from odoo import models, fields, api, _
 
 _logger = logging.getLogger(__name__)
 
-class PaymentAcquirer(models.Model):
-    _inherit = 'payment.acquirer'
+class PaymentProvier(models.Model):
+    _inherit = 'payment.provider'
 
-    provider = fields.Selection(selection_add=[('thawani_checkout', 'Thawani Checkout')],ondelete={'thawani_checkout': 'cascade'})
+    code = fields.Selection(selection_add=[('thawani_checkout', 'Thawani Checkout')],ondelete={'thawani_checkout': 'cascade'})
     thawani_secret_key = fields.Char("Secret Key", required_if_provider='thawani_checkout', help="Enter thawani secret key.")
     thawani_public_key = fields.Char("Public Key", required_if_provider='thawani_checkout', help="Enter thawani public key.")
 
-    def _get_default_payment_method_id(self):
+    def _get_default_payment_method_id(self, code):
         self.ensure_one()
-        if self.provider != 'thawani_checkout':
-            return super()._get_default_payment_method_id()
+        if code != 'thawani_checkout':
+            return super()._get_default_payment_method_id(code)
         return self.env.ref('payment_thawani_checkout.payment_method_thawani_checkout').id
 
     def get_thawani_checkout_base_url(self):

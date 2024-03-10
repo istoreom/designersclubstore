@@ -1,30 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
-<!-- See LICENSE file for full copyright and licensing details. -->
-<!-- License URL : https://store.webkul.com/license.html/ -->
 <odoo>
-    <data noupdate="1">
-        <record id="payment_acquirer_thawani_checkout" model="payment.acquirer">
-            <field name="name">Thawani Checkout</field>
-            <field name="provider">thawani_checkout</field>
-            <!-- <field name="image_128" type="base64" file="payment_thawani_checkout/static/src/img/thawani_logo.svg"/> -->
-            <field name="company_id" ref="base.main_company"/>
-            <field name="redirect_form_view_id" ref="thawani_checkout_form"/>
-            <field name='thawani_secret_key'>dummy</field>
-            <field name='thawani_public_key'>dummy</field>
-            <field name="description">
-                <![CDATA[
-                    <p>Thawani Checkout is a payment gateway that allows you to collect payments from your customers.</p>]]>
-            </field>
-            <field name="pre_msg"><![CDATA[
-                <p>A payment gateway to accept online payments via credit cards and debit cards.</p>]]>
-            </field>
-        </record>
+<data noupdate="1">
 
         <record id="payment_method_thawani_checkout" model="account.payment.method">
             <field name="name">Thawani Checkout</field>
             <field name="code">thawani_checkout</field>
             <field name="payment_type">inbound</field>
         </record>
-    </data>
+
+            <record id="payment_method_thawani_checkout_l" model="payment.method">
+            <field name="name">Thawani Checkout</field>
+            <field name="code">thawani_checkout</field>
+            <field name="image" type="base64" file="payment_thawani_checkout/static/description/icon.png"/>
+            </record>
+
+        <record id="payment_provier_thawani_checkout" model="payment.provider">
+            <field name="name">Thawani Checkout</field>
+            <field name="code">thawani_checkout</field>
+            <field name="image_128" type="base64" file="payment_thawani_checkout/static/description/icon.png"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="module_id" ref="base.module_payment_thawani_checkout"/>
+            <field name="redirect_form_view_id" ref="thawani_checkout_form"/>
+            <field name='thawani_secret_key'>fXqRYbT3gdjZOblCd2Uw3I6uyraIbH</field>
+            <field name='thawani_public_key'>LsZaizNu8gbL5T1G94sdj7mbYkLa8c</field>
+            <field name="payment_method_ids"
+               eval="[(6, 0, [
+                   ref('payment_thawani_checkout.payment_method_thawani_checkout_l')])]"/>
+        </record>
+</data>
 </odoo>

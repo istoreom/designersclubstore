@@ -34,7 +34,8 @@ class ThawaniCheckout(http.Controller):
             "reference" : reference,
             "state" : "pending"
         }
-        request.env['payment.transaction'].sudo()._handle_feedback_data('thawani_checkout', params)
+        tx_sudo = request.env['payment.transaction'].sudo()._get_tx_from_notification_data('thawani_checkout', params)
+        tx_sudo._handle_notification_data('thawani_checkout', params)
         return werkzeug.utils.redirect('/payment/status')
 
     @http.route('/payment/thawani_checkout/cancel', type='http', auth="public", website=True)
@@ -43,7 +44,8 @@ class ThawaniCheckout(http.Controller):
             "reference" : reference,
             "state" : "cancel"
         }
-        request.env['payment.transaction'].sudo()._handle_feedback_data('thawani_checkout', params)
+        tx_sudo = request.env['payment.transaction'].sudo()._get_tx_from_notification_data('thawani_checkout', params)
+        tx_sudo._handle_notification_data('thawani_checkout', params)
         return werkzeug.utils.redirect('/payment/status')
 
     @http.route('/thawani/checkout/webhook/interface', type='json', auth='public')
@@ -59,8 +61,9 @@ class ThawaniCheckout(http.Controller):
                     "currency" : data.get('currency'),
                     "reference" : data.get('client_reference_id'),
                     "state" : data.get('payment_status'),
-                    "acquirer_reference" : data.get('invoice'),
+                    "provider_reference" : data.get('invoice'),
                     "session_id" : data.get('session_id'),
                 }
-                request.env['payment.transaction'].sudo()._handle_feedback_data('thawani_checkout',params)
+                tx_sudo = request.env['payment.transaction'].sudo()._get_tx_from_notification_data('thawani_checkout',params)
+                tx_sudo._handle_notification_data('thawani_checkout', params)
         return Response('success', status=200)

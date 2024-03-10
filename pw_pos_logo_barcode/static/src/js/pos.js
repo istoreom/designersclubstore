@@ -1,18 +1,24 @@
-odoo.define('pw_pos_logo_barcode.pos', function (require) {
-"use strict";
+odoo.define('pw_pos_logo_barcode.models', function (require) {
+    "use strict";
 
-var models = require('point_of_sale.models');
-models.load_fields('res.company', ['street', 'street', 'city', 'state_id', 'zip']);
+    const { Order} = require('point_of_sale.models');
+    const Registries = require('point_of_sale.Registries');
 
-var _super_Order = models.Order.prototype;
-models.Order = models.Order.extend({
-    export_for_printing: function () {
-        var res = _super_Order.export_for_printing.apply(this, arguments);
-        var canvas = document.createElement('canvas');
-        JsBarcode(canvas, res['name']);
-        res['barcode'] = canvas.toDataURL("image/png");
-        res['pos_logo'] = 'data:image/png;base64,'+this.pos.config.pos_logo;
-        return res;
-    },
-});
+    const PosChangeLogo = (Order) => class PosChangeLogo extends Order {
+        export_for_printing() {
+            var receipt = super.export_for_printing(...arguments);
+            var canvas = document.createElement('canvas');
+            JsBarcode(canvas, receipt['name']);
+            if (this.pos.config.receipt_logo){
+                receipt['pw_pos_logo'] = 'data:image/png;base64,' + this.pos.config.pw_pos_logo;
+                receipt['barcode'] = canvas.toDataURL("image/png");
+            }
+            receipt.company.state_id = this.pos.company.state_id;
+            receipt.company.zip = this.pos.company.zip;
+            receipt.company.street = this.pos.company.street;
+            receipt.company.city = this.pos.company.city;
+            return receipt;
+        }
+    }
+    Registries.Model.extend(Order, PosChangeLogo);
 });

@@ -1,25 +1,18 @@
-odoo.define('pw_pos_logo_barcode.chrome', function (require) {
-    'use strict';
+/** @odoo-module */
 
-    const Chrome = require('point_of_sale.Chrome');
-    const Registries = require('point_of_sale.Registries');
+import { Navbar } from "@point_of_sale/app/navbar/navbar";
+import { patch } from "@web/core/utils/patch";
 
-    const PosLogo = (Chrome) =>
-        class extends Chrome {
-            async start() {
-                await super.start();
-                if (this.env.pos.config.receipt_logo && this.env.pos.config.logo_setting === 'use_company_logo') {
-                    var url = window.location.origin + '/web/image?model=res.company&field=logo&id='+this.env.pos.company.id;
-                    $('.pos-logo').attr("src", url);
-                }
-                if (this.env.pos.config.receipt_logo && this.env.pos.config.logo_setting === 'use_pos_logo') {
-                    var url = window.location.origin + '/web/image?model=pos.config&field=pos_logo&id='+this.env.pos.config.id;
-                    $('.pos-logo').attr("src", url);
-                }
-            }
-        };
-
-    Registries.Component.extend(Chrome, PosLogo);
-
-    return Chrome;
+patch(Navbar.prototype, {
+    setup() {
+        super.setup(...arguments);
+    },
+    get imageUrl() {
+        if (this.pos.config.receipt_logo && this.pos.config.logo_setting === 'use_company_logo') {
+            return `/web/image?model=res.company&field=logo&id=${this.pos.company.id}`;
+        }
+        if (this.pos.config.receipt_logo && this.pos.config.logo_setting === 'use_pos_logo') {
+            return `/web/image?model=pos.config&field=pw_pos_logo&id=${this.pos.config.id}&unique=${this.pos.config.write_date}`;
+        }
+    }
 });
